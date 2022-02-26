@@ -12,7 +12,7 @@ var tasksCompletedEl = document.querySelector("#tasks-completed");
 var pageContentEl = document.querySelector("#page-content");
 var taskIdCounter = 0;
 var tasks = [];
-var createTaskActions = function(taskId){
+var createTaskActions = function(taskId, taskStatus){
     var actionContainerEl = document.createElement("div");
     actionContainerEl.className = "task-actions";
     // Create edit button
@@ -35,6 +35,9 @@ var createTaskActions = function(taskId){
         var statusOptionEl = document.createElement("option");
         statusOptionEl.textContent = statusChoices[i];
         statusOptionEl.setAttribute("value", statusChoices[i]);
+        if (taskStatus===statusChoices[i].toLowerCase()){
+            statusOptionEl.setAttribute("selected", "selected");
+        }
         // append to select
         statusSelectEl.appendChild(statusOptionEl);
     };
@@ -75,7 +78,7 @@ var createTaskEl = function(taskDataObj){
     taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
     // Add elements to parent
     listItemEl.appendChild(taskInfoEl);
-    var taskActionsEl = createTaskActions(taskIdCounter);
+    var taskActionsEl = createTaskActions(taskIdCounter, taskDataObj.status);
     listItemEl.appendChild(taskActionsEl);
     taskDataObj.id = taskIdCounter;
     tasks.push(taskDataObj);
