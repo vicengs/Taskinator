@@ -75,12 +75,18 @@ var createTaskEl = function(taskDataObj){
     taskInfoEl.innerHTML = "<h3 class='task-name'>" + taskDataObj.name + "</h3><span class='task-type'>" + taskDataObj.type + "</span>";
     // Add elements to parent
     listItemEl.appendChild(taskInfoEl);
+    var taskActionsEl = createTaskActions(taskIdCounter);
+    listItemEl.appendChild(taskActionsEl);
     taskDataObj.id = taskIdCounter;
     tasks.push(taskDataObj);
     saveTasks(tasks);
-    var taskActionsEl = createTaskActions(taskIdCounter);
-    listItemEl.appendChild(taskActionsEl);
-    tasksToDoEl.appendChild(listItemEl);
+    if(taskDataObj.status === "to do"){
+        tasksToDoEl.appendChild(listItemEl);
+    }else if(taskDataObj.status === "in progress"){
+        tasksInProgressEl.appendChild(listItemEl);
+    }else{
+        tasksCompletedEl.appendChild(listItemEl);
+    };
     // Increase in one task counter to unique Id
     taskIdCounter++;
 };
@@ -90,7 +96,7 @@ var taskFormHandler = function(event){
     var taskTypeInput = document.querySelector("select[name='task-type']").value;
     // Validate info is not null
     if(!taskNameInput || !taskTypeInput){
-        alert("Tou need to fill out the task form!");
+        alert("You need to fill out the task form!");
         return false;
     };
     formEl.reset();
@@ -178,4 +184,22 @@ var taskStatusChangeHandler = function(event){
 var saveTasks = function(){
     localStorage.setItem("tasks", JSON.stringify(tasks));
 };
+var loadTasks = function(){
+    var tasks1 = JSON.parse(localStorage.getItem('tasks'));
+    if (tasks1){
+        for(var i=0; i < tasks1.length; i++){
+            /*taskIdCounter = JSON.parse(tasks1[i].id);
+            var taskDataObj = {
+                name: JSON.stringify(tasks1[i].name).replace(/"/g,""),
+                type: JSON.stringify(tasks1[i].type).replace(/"/g,""),
+                status: JSON.stringify(tasks1[i].status).replace(/"/g,"")
+            };*/
+            //createTaskEl(taskDataObj);
+            createTaskEl(tasks1[i]);
+        };
+    }else{
+        //tasks = [];
+    };
+}
+loadTasks();
 pageContentEl.addEventListener("change", taskStatusChangeHandler);
